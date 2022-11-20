@@ -1,0 +1,45 @@
+server:
+  port: 1000
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:1000"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - OPTIONS
+              - DELETE
+      routes:
+        - id: customer module
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/customer/**
+            - Header=customer,true
+          filters:
+            - AddRequestHeader=customerKey, customerValue
+            - AddResponseHeader=customerKey, customerValue
+        - id: product module
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product/**
+            - Header=product,true
+          filters:
+            - AddRequestHeader=productKey, productValue
+            - AddResponseHeader=productKey, productValue
+eureka:
+  client:
+    health-check:
+      enabled: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 20
