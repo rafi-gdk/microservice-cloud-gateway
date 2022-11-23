@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  name: gateway-deployment
+  labels:
+    app: gatewaylabel
+spec:
+  replicas: 1 # Number of replicas that will be created for this deployment
+  selector:
+    matchLabels:
+      app: gatewaylabel
+  template:
+    metadata:
+      labels:
+        app: gatewaylabel
+    spec:
+      containers:
+        - name: cloud-gateway
+          image: cloud-gateway:latest # Image that will be used to containers in the cluster
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CUSTOMER_SERVICE_URI
+              value: http://customer-deployment:1002
+            - name: PRODUCT_SERVICE_URI
+              value: http://product-deployment:1003
+          ports:
+            - containerPort: 1000 # The port that the container is running on in the cluster

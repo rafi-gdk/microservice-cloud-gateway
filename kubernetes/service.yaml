@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service # Kubernetes resource kind we are creating
+metadata:
+  name: gateway-deployment
+spec:
+  selector:
+      app: gatewaylabel
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 1000
+      targetPort: 1000
